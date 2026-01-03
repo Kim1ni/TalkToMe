@@ -1,37 +1,43 @@
 
-  # A simple name for your workflow
   name: Build KMP App
 
-  # Controls when the workflow will run.
-  # This workflow runs on any push to the 'main' branch.
   on:
     push:
-      branches: [ "main" ]
+      branches: [ "master" ]
     pull_request:
-      branches: [ "main" ]
+      branches: [ "master" ]
 
-  # A workflow run is made up of one or more jobs that can run sequentially or in parallel
   jobs:
-    # This job is named 'build'
     build:
-      # The type of runner that the job will run on.
-      # We must use a macOS runner because building an iOS app requires Xcode.
       runs-on: macos-latest
 
-      # Steps represent a sequence of tasks that will be executed as part of the job
       steps:
-        # 1. Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         - name: Checkout repository
           uses: actions/checkout@v4
 
-        # 2. Sets up the Java Development Kit (JDK) needed for Gradle
         - name: Set up JDK 17
           uses: actions/setup-java@v4
           with:
             java-version: '17'
             distribution: 'temurin'
 
-        # 3. Caches Gradle dependencies and wrappers to speed up subsequent builds
+        # --- THIS IS THE NEW STEP ---
+        # Create the local.properties file from GitHub secrets before the build
+        - name: Create local.properties
+          run: |
+            echo "apiKey=${{ secrets.API_KEY }}" >> local.properties
+            echo "model=${{ secrets.MODEL_NAME }}" >> local.properties
+            echo "liveModel=${{ secrets.LIVE_MODEL_NAME }}" >> local.properties
+            echo "webClientId=${{ secrets.WEB_CLIENT_ID }}" >> local.properties
+
+
+        # ---------------------------
+          # The 'env' block is not strictly necessary here but shows how secrets are accessed
+          env:
+            API_KEY: ${{ secrets.API_KEY }}
+            MODEL_NAME: ${{ secrets.MODEL_NAME }}
+        # ---------------------------
+
         - name: Cache Gradle dependencies
           uses: actions/cache@v4
           with:
@@ -42,29 +48,11 @@
             restore-keys: |
               ${{ runner.os }}-gradle-
 
-        # 4. Grants execute permissions to the Gradle wrapper script
-        # This is a crucial step, especially on Unix-based systems like macOS and Linux.
         - name: Grant execute permission for gradlew
           run: chmod +x gradlew
 
-        # 5. Build the Android debug APK
-        # This step compiles the Android app and runs any associated unit tests.
         - name: Build Android App (Debug)
           run: ./gradlew :composeApp:assembleDebug
 
-        # 6. Build the iOS app for the simulator
-        # This step compiles the shared KMP framework and the iOS application itself,
-        # ensuring that your iOS-specific code and dependencies are correct.
-        # We use xcodebuild to build for a simulator to avoid code-signing issues.
         - name: Build iOS App (for Simulator)
           run: ./gradlew :composeApp:iosX64Binaries
-
-        # === OPTIONAL: Upload APK as an artifact ===
-        # Uncomment the following lines if you want to be able to download the APK
-        # directly from the GitHub Actions run summary page.
-        # - name: Upload Android APK
-        #   uses: actions/upload-artifact@v4
-        #   with:
-        #     name: android-debug-apk
-        #     path: composeApp/build/outputs/apk/debug/composeApp-debug.apk
-
