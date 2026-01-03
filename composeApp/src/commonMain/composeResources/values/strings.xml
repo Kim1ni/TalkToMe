@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General -->
+    <string name="app_name">TalkToMe</string>
+    <string name="app_logo_description">App Logo</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="try_again">Try Again</string>
+    <string name="error_unknown">An unknown error occurred.</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_title">Welcome to TalkToMe</string>
+
+    <!-- Navigation Bar -->
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Login Screen -->
+    <string name="login_tagline">Your personal AI companion for mindful conversations and growth.</string>
+    <string name="login_google_button">Sign in with Google</string>
+    <string name="login_guest_button">Continue as Guest</string>
+    <string name="login_or">OR</string>
+    <string name="login_disclaimer">By continuing, you agree to store your therapy data securely in the cloud.</string>
+    <string name="login_connecting">Connecting...</string>
+    <string name="login_domain_error_title">Action Required: Authorize Domain</string>
+    <string name="login_domain_error_body">Domain not authorized. You must add this domain to your Authorized Domains list in Firebase.</string>
+
+    <!-- Home -->
+    <string name="home_profile_picture">Profile Picture</string>
+    <string name="home_user_name">Guest</string>
+    <string name="home_welcome">Hello, %1$s</string>
+    <string name="home_subtitle">Ready to check in with yourself?</string>
+    <string name="home_streak">Current Streak</string>
+    <string name="home_sessions_count">%1$d Sessions</string>
+    <string name="home_mood_trends">Mood Trends</string>
+    <string name="home_boosters">Boosters</string>
+    <string name="home_drainers">Drainers</string>
+    <string name="home_action_plan">Action Plan</string>
+    <string name="home_filter_all">All</string>
+    <string name="home_filter_today">Today</string>
+    <string name="home_empty_tasks">All caught up! Enjoy your day.</string>
+    <string name="home_start_session">Start Session</string>
+    <string name="home_guest_shield_title">Protect your journey</string>
+    <string name="home_guest_shield_body">You are currently a guest. Link a Google account to save your data permanently.</string>
+    <string name="home_link_account">Link Account</string>
+
+    <!-- Session (Active Recording) -->
+    <string name="session_title">Therapy Session</string>
+    <string name="session_status_connecting">Connecting...</string>
+    <string name="session_status_live">Live Recording</string>
+    <string name="session_end_button">End Session</string>
+    <string name="session_prompt_start">Start speaking to begin...</string>
+    <string name="session_dialog_end_title">End Session?</string>
+    <string name="session_dialog_end_body">Are you sure you want to end this conversation?</string>
+    <string name="session_error_title">Connection Error</string>
+    <string name="session_processing_title">Analyzing Session</string>
+    <string name="session_processing_body">Updating your mood chart and generating new action items...</string>
+
+    <!-- Session History -->
+    <string name="history_title">My Journey</string>
+    <string name="history_count">%1$d sessions recorded</string>
+    <string name="history_empty">No memories yet.</string>
+    <string name="history_reflection">Reflection</string>
+
+    <!-- Session Details -->
+    <string name="details_title">Session Details</string>
+    <string name="details_mood_score">Mood Score</string>
+    <string name="details_summary">Summary</string>
+    <string name="details_transcript">Transcript</string>
+    <string name="details_focus_areas">Focus Areas Identified</string>
+    <string name="details_download_pdf">Download Report (PDF)</string>
+    <string name="details_playback_settings">Playback Settings</string>
+    <string name="details_playback_original">Original</string>
+    <string name="details_playback_ai">AI Reader</string>
+    <string name="details_narrator">Narrator Voice</string>
+
+    <!-- Profile & Settings -->
+    <string name="profile_title">Profile &amp; Settings</string>
+    <string name="profile_care_team">My Care Team</string>
+    <string name="profile_create_custom">Create Custom</string>
+    <string name="profile_notifications">Notifications</string>
+    <string name="profile_appearance">Appearance</string>
+    <string name="profile_sign_out">Sign Out</string>
+    <string name="profile_version_footer">TalkToMe v1.0 • Built with Gemini 2.5</string>
+
+    <!-- Personas (Default Content) -->
+    <string name="persona_empathetic_name">Gentle Listener</string>
+    <string name="persona_empathetic_desc">Warm, compassionate, and validating.</string>
+    <string name="persona_direct_name">Accountability Coach</string>
+    <string name="persona_direct_desc">Direct, honest, and solution-oriented.</string>
+    <string name="persona_cbt_name">CBT Specialist</string>
+    <string name="persona_cbt_desc">Analytical, identifying cognitive distortions.</string>
+
+    <!-- Persona Customization Editor -->
+    <string name="persona_editor_title_new">Custom Therapist</string>
+    <string name="persona_editor_title_view">View Details</string>
+    <string name="persona_name_label">Internal Name</string>
+    <string name="persona_name_hint">e.g., Grandma Vibes</string>
+    <string name="persona_desc_label">Menu Description</string>
+    <string name="persona_desc_hint">e.g., Sweet, patient, and cookie-baking energy</string>
+    <string name="persona_instructions_label">AI Instructions</string>
+    <string name="persona_instructions_hint">You are a...</string>
+    <string name="persona_voice_label">Voice Preference</string>
+    <string name="persona_save">Save Therapist</string>
+
+    <!-- Reflection Modal -->
+    <string name="reflection_title">Task Complete!</string>
+    <string name="reflection_question">How did it feel?</string>
+    <string name="reflection_notes_label">Any thoughts? (Optional)</string>
+    <string name="reflection_notes_hint">It was easier than I thought...</string>
+    <string name="reflection_save">Complete &amp; Save</string>
+
+    <!-- Mood Labels -->
+    <string name="mood_hard">Hard</string>
+    <string name="mood_neutral">Neutral</string>
+    <string name="mood_good">Good</string>
+    <string name="mood_proud">Proud</string>
+    <string name="mood_relieved">Relieved</string>
+</resources>

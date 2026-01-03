@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:pivotX="54"
+        android:pivotY="54">
+
+        <path
+            android:pathData="M41.26,64.05L36.74,50.49L54.82,41.46M54.82,41.46L72.89,45.97H88.71M54.82,41.46V73.09M36.74,86.64H68.37L72.89,68.57L90.97,59.53M81.93,86.64H95.49M14.15,82.13C14.15,83.32 14.62,84.47 15.47,85.32C16.32,86.17 17.47,86.64 18.66,86.64C19.86,86.64 21.01,86.17 21.86,85.32C22.71,84.47 23.18,83.32 23.18,82.13C23.18,80.93 22.71,79.78 21.86,78.93C21.01,78.08 19.86,77.61 18.66,77.61C17.47,77.61 16.32,78.08 15.47,78.93C14.62,79.78 14.15,80.93 14.15,82.13ZM50.3,23.38C50.3,24.58 50.77,25.73 51.62,26.58C52.47,27.42 53.62,27.9 54.82,27.9C56.01,27.9 57.16,27.42 58.01,26.58C58.86,25.73 59.33,24.58 59.33,23.38C59.33,22.18 58.86,21.03 58.01,20.18C57.16,19.34 56.01,18.86 54.82,18.86C53.62,18.86 52.47,19.34 51.62,20.18C50.77,21.03 50.3,22.18 50.3,23.38Z"
+            android:strokeLineJoin="round"
+            android:strokeWidth="9.03771"
+            android:fillColor="#00000000"
+            android:strokeColor="@android:color/black" /> <!-- Use black for the monochrome version -->
+
+    </group>
+
+</vector>

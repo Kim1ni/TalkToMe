@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>542869843440-uc8u761ts4cll0el4551732f3tortqaa.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.542869843440-uc8u761ts4cll0el4551732f3tortqaa</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>542869843440-smqhrbhm8malklvs6299fsomr9kraq3v.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDydkVBfVCBkgSuzKZbwpOcQckAqnxmz8c</string>
+	<key>GCM_SENDER_ID</key>
+	<string>542869843440</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.kmp.talktome.TalkToMe</string>
+	<key>PROJECT_ID</key>
+	<string>talktome-76484</string>
+	<key>STORAGE_BUCKET</key>
+	<string>talktome-76484.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:542869843440:ios:1e88439d94bafd54568135</string>
+</dict>
+</plist>
