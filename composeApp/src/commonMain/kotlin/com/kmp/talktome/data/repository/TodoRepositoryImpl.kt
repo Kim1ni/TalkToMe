@@ -5,15 +5,19 @@ import com.kmp.talktome.domain.model.TodoItem
 import com.kmp.talktome.domain.model.TodoReflection
 import com.kmp.talktome.domain.repository.TodoRepository
 import com.kmp.talktome.domain.util.Result
-import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.Direction
-import dev.gitlive.firebase.firestore.firestore
+import dev.gitlive.firebase.firestore.FirebaseFirestore
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-class TodoRepositoryImpl : TodoRepository {
-    private val firestore = Firebase.firestore
+private const val TAG = "TodoRepositoryImpl"
+
+class TodoRepositoryImpl(
+    private val firestore :FirebaseFirestore
+) : TodoRepository {
 
     override fun getUserTodos(userId: String): Flow<List<TodoItem>> {
         return firestore
@@ -26,7 +30,7 @@ class TodoRepositoryImpl : TodoRepository {
                     try {
                         doc.data<TodoItem>()
                     } catch (e: Exception) {
-                        println("Error parsing todo: ${e.message}")
+                        Napier.e(message = "Error parsing todo: ${e.message}", tag = TAG)
                         null
                     }
                 }
@@ -47,6 +51,7 @@ class TodoRepositoryImpl : TodoRepository {
                     try {
                         doc.data<TodoItem>()
                     } catch (e: Exception) {
+                        Napier.e(message = "Error getting active todos: ${e.message}", tag = TAG)
                         null
                     }
                 }
@@ -67,6 +72,7 @@ class TodoRepositoryImpl : TodoRepository {
                     try {
                         doc.data<TodoItem>()
                     } catch (e: Exception) {
+                        Napier.e(message = "Error getting completed todos: ${e.message}", tag = TAG)
                         null
                     }
                 }
@@ -84,6 +90,7 @@ class TodoRepositoryImpl : TodoRepository {
                     try {
                         doc.data<TodoItem>()
                     } catch (e: Exception) {
+                        Napier.e(message = "Error getting todos by session: ${e.message}", tag = TAG)
                         null
                     }
                 }
@@ -100,6 +107,7 @@ class TodoRepositoryImpl : TodoRepository {
             val todo = document.data<TodoItem>()
             Result.Success(todo)
         } catch (e: Exception) {
+            Napier.e(message = "Error getting todos by ID: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -112,6 +120,7 @@ class TodoRepositoryImpl : TodoRepository {
                 .set(todo)
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error saving todo: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -124,6 +133,7 @@ class TodoRepositoryImpl : TodoRepository {
                 .set(todo)
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error updating todo: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -136,10 +146,12 @@ class TodoRepositoryImpl : TodoRepository {
                 .delete()
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e("Error deleting todo: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun toggleTodoCompletion(
         todoId: String,
         reflection: TodoReflection?
@@ -171,6 +183,7 @@ class TodoRepositoryImpl : TodoRepository {
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error toggling todo completion: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }

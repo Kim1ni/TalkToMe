@@ -7,6 +7,7 @@
     <string name="ok">OK</string>
     <string name="try_again">Try Again</string>
     <string name="error_unknown">An unknown error occurred.</string>
+    <string name="retry">Retry</string>
 
     <!-- Splash Screen -->
     <string name="splash_title">Welcome to TalkToMe</string>
@@ -41,14 +42,19 @@
     <string name="home_filter_today">Today</string>
     <string name="home_empty_tasks">All caught up! Enjoy your day.</string>
     <string name="home_start_session">Start Session</string>
+    <string name="home_start_session_with">START SESSION WITH</string>
     <string name="home_guest_shield_title">Protect your journey</string>
     <string name="home_guest_shield_body">You are currently a guest. Link a Google account to save your data permanently.</string>
     <string name="home_link_account">Link Account</string>
+    <string name="home_linking_account">Linking...</string>
 
     <!-- Session (Active Recording) -->
     <string name="session_title">Therapy Session</string>
+    <string name="session_status_error">Error: %1$s</string>
     <string name="session_status_connecting">Connecting...</string>
     <string name="session_status_live">Live Recording</string>
+    <string name="session_status_ending">Ending...</string>
+    <string name="session_status_idle">Idle</string>
     <string name="session_end_button">End Session</string>
     <string name="session_prompt_start">Start speaking to begin...</string>
     <string name="session_dialog_end_title">End Session?</string>
@@ -56,6 +62,10 @@
     <string name="session_error_title">Connection Error</string>
     <string name="session_processing_title">Analyzing Session</string>
     <string name="session_processing_body">Updating your mood chart and generating new action items...</string>
+    <string name="session_end_dialog_title">End Session</string>
+    <string name="session_end_dialog_text">Are you sure you want to end the session?</string>
+    <string name="session_end_dialog_end">End</string>
+    <string name="session_end_dialog_cancel">Cancel</string>
 
     <!-- Session History -->
     <string name="history_title">My Journey</string>
@@ -77,10 +87,23 @@
 
     <!-- Profile & Settings -->
     <string name="profile_title">Profile &amp; Settings</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="profile_custom">Custom</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_delete">Delete</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_edit_name">Edit name</string>
+    <string name="profile_guest_user">Guest User</string>
+    <string name="profile_link_google_account">Link Google Account</string>
     <string name="profile_care_team">My Care Team</string>
+    <string name="profile_care_team_subtitle">Manage your therapist personas</string>
     <string name="profile_create_custom">Create Custom</string>
     <string name="profile_notifications">Notifications</string>
+    <string name="profile_notifications_on">On: Gentle check-ins allowed</string>
+    <string name="profile_notifications_off">Off: Permissions needed</string>
     <string name="profile_appearance">Appearance</string>
+    <string name="profile_dark_mode">Dark Mode</string>
+    <string name="profile_light_mode">Light Mode</string>
     <string name="profile_sign_out">Sign Out</string>
     <string name="profile_version_footer">TalkToMe v1.0 • Built with Gemini 2.5</string>
 
@@ -117,4 +140,5 @@
     <string name="mood_good">Good</string>
     <string name="mood_proud">Proud</string>
     <string name="mood_relieved">Relieved</string>
+
 </resources>

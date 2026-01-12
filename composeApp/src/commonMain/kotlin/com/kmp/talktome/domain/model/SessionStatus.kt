@@ -5,6 +5,7 @@ enum class SessionStatus {
     CONNECTING,
     ACTIVE,
     ENDING,
+    ANALYZING,
     ENDED,
     ERROR,
     COMPLETED

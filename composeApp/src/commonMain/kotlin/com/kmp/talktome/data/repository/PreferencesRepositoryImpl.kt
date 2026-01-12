@@ -1,17 +1,20 @@
 package com.kmp.talktome.data.repository
 
 import com.kmp.talktome.data.firebase.FirestoreCollections
-import com.kmp.talktome.domain.model.CustomPersona
 import com.kmp.talktome.domain.model.UserPreferences
 import com.kmp.talktome.domain.repository.PreferencesRepository
 import com.kmp.talktome.domain.util.Result
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.firestore
+import dev.gitlive.firebase.firestore.FirebaseFirestore
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class PreferencesRepositoryImpl : PreferencesRepository {
-    private val firestore = Firebase.firestore
+
+private const val TAG = "PreferencesRepository"
+
+class PreferencesRepositoryImpl(
+    private val firestore: FirebaseFirestore
+) : PreferencesRepository {
 
     override fun getUserPreferences(userId: String): Flow<UserPreferences?> {
         return firestore
@@ -27,7 +30,7 @@ class PreferencesRepositoryImpl : PreferencesRepository {
                         UserPreferences(userId = userId)
                     }
                 } catch (e: Exception) {
-                    println("Error parsing preferences: ${e.message}")
+                    Napier.d(tag = TAG, message = "Error parsing preferences: ${e.message}")
                     UserPreferences(userId = userId)
                 }
             }
@@ -41,6 +44,7 @@ class PreferencesRepositoryImpl : PreferencesRepository {
                 .set(preferences)
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error saving preferences: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -49,111 +53,30 @@ class PreferencesRepositoryImpl : PreferencesRepository {
         userId: String,
         updates: Map<String, Any>
     ): Result<Unit> {
+        Napier.d(tag = TAG, message = "[DEBUG_LOG] updatePreferences called for user $userId with updates: $updates")
         return try {
-            firestore
+            val docRef = firestore
                 .collection(FirestoreCollections.PREFERENCES)
                 .document(userId)
-                .update(updates)
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
-    }
 
-    override suspend fun addCustomPersona(
-        userId: String,
-        persona: CustomPersona
-    ): Result<Unit> {
-        return try {
-            // Get current preferences
-            val doc = firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .get()
-
-            val currentPrefs = if (doc.exists) {
-                doc.data<UserPreferences>()
+            val doc = docRef.get()
+            if (doc.exists) {
+                docRef.update(updates)
             } else {
-                UserPreferences(userId = userId)
+                // If document doesn't exist, create it with default preferences and the updates
+                val defaultPrefs = UserPreferences(userId = userId)
+                // We need to convert UserPreferences to a map and apply updates, 
+                // but since it's a simple object we can just set it and then update, 
+                // or better, create a merged map if possible.
+                // For simplicity, let's set the defaults first then update.
+                docRef.set(defaultPrefs)
+                docRef.update(updates)
             }
 
-            // Add new persona
-            val updatedPersonas = currentPrefs.customPersonas + persona
-
-            // Save back
-            firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .update(mapOf("customPersonas" to updatedPersonas))
-
+            Napier.d(tag = TAG, message = "[DEBUG_LOG] updatePreferences success for user $userId")
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(e)
-        }
-    }
-
-    override suspend fun updateCustomPersona(
-        userId: String,
-        persona: CustomPersona
-    ): Result<Unit> {
-        return try {
-            val doc = firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .get()
-
-            val currentPrefs = doc.data<UserPreferences>()
-
-            // Update persona in list
-            val updatedPersonas = currentPrefs.customPersonas.map {
-                if (it.id == persona.id) persona else it
-            }
-
-            // Save back
-            firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .update(mapOf("customPersonas" to updatedPersonas))
-
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(e)
-        }
-    }
-
-    override suspend fun deleteCustomPersona(
-        userId: String,
-        personaId: String
-    ): Result<Unit> {
-        return try {
-            val doc = firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .get()
-
-            val currentPrefs = doc.data<UserPreferences>()
-
-            // Remove persona from list
-            val updatedPersonas = currentPrefs.customPersonas
-                .filter { it.id != personaId }
-
-            // If deleted persona was active, reset to default
-            val updates = mutableMapOf<String, Any>(
-                "customPersonas" to updatedPersonas
-            )
-
-            if (currentPrefs.activePersonaId == personaId) {
-                updates["activePersonaId"] = "empathetic"
-            }
-
-            // Save back
-            firestore
-                .collection(FirestoreCollections.PREFERENCES)
-                .document(userId)
-                .update(updates)
-
-            Result.Success(Unit)
-        } catch (e: Exception) {
+            Napier.d(tag = TAG, message = "[DEBUG_LOG] updatePreferences error for user $userId: ${e.message}")
             Result.Error(e)
         }
     }

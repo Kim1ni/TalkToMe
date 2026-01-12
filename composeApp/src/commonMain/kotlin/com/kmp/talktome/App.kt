@@ -14,65 +14,9 @@ import com.kmp.talktome.ui.theme.TalkToMeTheme
 import com.mmk.kmpauth.google.GoogleAuthCredentials
 import com.mmk.kmpauth.google.GoogleAuthProvider
 
-/*
-@Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
-    }
-}
-*/
-
-/*
 @Composable
 fun App() {
-    // 1. Create the backstack (Starts with Login)
-    val backStack = rememberNavBackStack(startDestination = Screen.Login)
-
-    // 2. Define how keys map to UI
-    NavDisplay(
-        backstack = backStack,
-        entryProvider = entryProvider {
-            entry<Screen.Login> {
-                LoginScreen(
-                    onNavigateToHome = {
-                        // Clear backstack and set Home as the new root
-                        backStack.setStack(listOf(Screen.Home))
-                    }
-                )
-            }
-            entry<Screen.Home> {
-                HomeScreen()
-            }
-        }
-    )
-}*/
-
-@Composable
-fun App() {
-    TalkToMeTheme{
+    TalkToMeTheme {
         var appReady by remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) {

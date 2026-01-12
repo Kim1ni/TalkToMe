@@ -10,5 +10,5 @@ package com.kmp.talktome.domain.model
 data class TtsVoice(
     val id: String,
     val name: String,
-    val language: String //= name.substringAfter("(").substringBefore(")"),
+    val language: String
 )

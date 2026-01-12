@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
 import com.codingfeline.buildkonfig.compiler.FieldSpec
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
@@ -38,7 +41,6 @@ kotlin {
 
             implementation(libs.firebase.ai)
 
-
             implementation(libs.ktor.client.android)
         }
         commonMain.dependencies {
@@ -53,12 +55,20 @@ kotlin {
 
             implementation(libs.splash.screen)
 
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.coroutines)
+
+
             // Coil
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
 
             // Lottie Animations
             implementation(libs.compottie)
+
+
+            // Dependency Injection
+            implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
@@ -86,6 +96,18 @@ kotlin {
             implementation(libs.kotlinx.serialization)
 
             implementation(libs.navigation.compose)
+
+            implementation(libs.androidx.navigation3.ui)
+            //implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+
+            // Napier
+            implementation(libs.napier)
+            implementation(libs.vico.multiplatform)
+
+            //Permissions
+            api(libs.moko.permissions)
+            api(libs.moko.permissions.compose)
 
         }
 
@@ -185,3 +207,14 @@ buildkonfig {
         )
     }
 }
+/*
+// This custom task will compile the Kotlin code for all iOS simulator targets.
+// If this task succeeds locally, the iOS part of your GitHub Actions build should also succeed.
+tasks.register("checkIosBuild") {
+    group = "Verification"
+    description = "Checks if the shared KMP module can be built for iOS simulators."
+
+    // Depend on the compilation tasks for the main iOS simulator architectures
+    dependsOn("iosX64Binaries") // For Intel-based simulators (like in GitHub Actions)
+    dependsOn("iosArm64Binaries") // For Apple Silicon-based simulators (modern Macs)
+}*/

@@ -1,124 +1,243 @@
-/*
 import Foundation
 import AVFoundation
-import FirebaseAILogic // Required for Gemini Live API
+import FirebaseAILogic
 import shared
 
 class iOSGeminiLiveHandler: NSObject, SwiftGeminiBridge {
-    private let liveModel = FirebaseAI.firebaseAI().liveModel(modelName: "gemini-2.0-flash")
-
-    func start() {
-        Task {
-            let session = try await liveModel.connect()
-            // Handle streaming responses
-            for try await message in session.responses {
-                // Play audio back using AVPlayer or AudioEngine
-            }
-        }
-    }
-
-    func send(data: Data) {
-        // session.sendAudioRealtime(data)
-    }
-}*/
-import Foundation
-import AVFoundation // For audio playback
-import FirebaseAILogic // For the Gemini Live API
-import shared // Your shared KMP module
-
-// This class is the iOS implementation of the `GeminiLiveService` interface.
-class iOSGeminiLiveHandler: NSObject, GeminiLiveService {
     private var liveSession: LiveSession?
-    private var audioPlayer: AVAudioPlayer?
-
-    // The callbacks object from the shared ViewModel will be stored here.
     private var callbacks: LiveSessionCallbacks?
-
-    // Function to connect to the Gemini service. Called from the shared ViewModel.
-    func connect(config: SessionConfig, callbacks: LiveSessionCallbacks) async throws -> KotlinUnit {
+    
+    private let audioEngine = AVAudioEngine()
+    private let playerNode = AVAudioPlayerNode()
+    private var inputFormat: AVAudioFormat?
+    private var outputFormat: AVAudioFormat?
+    
+    private let lock = NSLock()
+    private var currentInputTranscription: String = ""
+    private var currentOutputTranscription: String = ""
+    private var fullAudioData = Data()
+    
+    private let sampleRate: Double = 24000
+    
+    override init() {
+        super.init()
+        setupAudioEngine()
+    }
+    
+    private func setupAudioEngine() {
+        outputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: sampleRate, channels: 1, interleaved: false)
+        audioEngine.attach(playerNode)
+        audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: outputFormat)
+    }
+    
+    func connect(config: SessionConfig, modelName: String, callbacks: LiveSessionCallbacks) async throws {
         self.callbacks = callbacks
-
+        
+        lock.lock()
+        self.currentInputTranscription = ""
+        self.currentOutputTranscription = ""
+        self.fullAudioData = Data()
+        lock.unlock()
+        
+        let liveGenerationConfig = LiveGenerationConfig(
+            speechConfig: SpeechConfig(voice: Voice(name: config.voiceName.name)),
+            responseModality: .audio
+        )
+        
+        let liveModel = FirebaseAI.firebaseAI().liveModel(
+            modelName: modelName,
+            generationConfig: liveGenerationConfig,
+            systemInstruction: Content(role: "system", parts: [TextPart(text: config.systemInstruction)])
+        )
+        
         do {
-            // 1. Initialize and configure the model from the shared config
-            let liveModel = FirebaseAI.firebaseAI().liveModel(
-                modelName: "gemini-1.5-flash", // It's good practice to use a stable model name
-                systemInstruction: config.systemInstruction
-            )
-
-            // 2. Connect to the session
             liveSession = try await liveModel.connect()
-            self.callbacks?.onOpen()
-
-            // 3. Start a background Task to listen for responses from Gemini
-            Task { [weak self] in
-                do {
-                    for try await message in self?.liveSession?.responses ?? [].async {
-                        self?.handleGeminiResponse(message)
-                    }
-                    self?.callbacks?.onClose()
-                } catch {
-                    self?.callbacks?.onError(error: error)
-                }
-            }
-
-            // 4. Start the microphone to send audio to Gemini
-            startMicrophone()
-
-            return KotlinUnit()
+            callbacks.onOpen()
+            
+            startListening()
+            try startRecording()
         } catch {
-            self.callbacks?.onError(error: error)
+            callbacks.onError(error: KotlinException(message: error.localizedDescription))
             throw error
         }
     }
-
-    // Function to disconnect. Called from the shared ViewModel.
+    
     func disconnect() async throws -> KotlinByteArray? {
-        stopMicrophone()
+        stopRecording()
         liveSession?.close()
         liveSession = nil
+        callbacks?.onClose()
+        
+        lock.lock()
+        let recordedAudio = fullAudioData
+        self.currentInputTranscription = ""
+        self.currentOutputTranscription = ""
+        self.fullAudioData = Data()
+        lock.unlock()
+        
         callbacks = nil
-        // For simplicity, we are not returning the full audio recording on iOS for now.
-        return nil
-    }
-
-    // Private method to handle responses from Gemini
-    private func handleGeminiResponse(_ response: LiveServerContent) {
-        // Handle the text part of the transcript
-        if let text = response.text {
-            let isUser = response.role == .user
-            self.callbacks?.onMessage(text: text, isUser: isUser, timestamp: Int64(Date().timeIntervalSince1970 * 1000))
+        
+        let byteArray = KotlinByteArray(size: Int32(recordedAudio.count))
+        recordedAudio.withUnsafeBytes { ptr in
+            if let baseAddress = ptr.baseAddress {
+                for i in 0..<recordedAudio.count {
+                    byteArray.set(index: Int32(i), value: Int8(bitPattern: baseAddress.load(fromByteOffset: i, as: UInt8.self)))
+                }
+            }
         }
-
-        // Handle the audio part for playback
-        if let audioPart = response.content?.parts.first(where: { $0 is InlineDataPart }) as? InlineDataPart {
+        return byteArray
+    }
+    
+    private func startListening() {
+        Task {
+            guard let liveSession = liveSession else { return }
+            do {
+                for try await response in liveSession.responses {
+                    handleResponse(response)
+                }
+            } catch {
+                callbacks?.onError(error: KotlinException(message: error.localizedDescription))
+            }
+        }
+    }
+    
+    private func handleResponse(_ response: LiveServerContent) {
+        let currentTime = Int64(Date().timeIntervalSince1970 * 1000)
+        
+        // 1. Handle Audio Playback
+        response.content?.parts.compactMap { $0 as? InlineDataPart }.forEach { audioPart in
             playAudio(data: audioPart.inlineData)
         }
+        
+        lock.lock()
+        defer { lock.unlock() }
+        
+        // 2. Handle Interruption
+        if response.interrupted {
+            playerNode.stop()
+            currentOutputTranscription = ""
+            callbacks?.onPartialTranscript(text: "", isUser: false)
+        }
+        
+        // 3. Handle Model Output (Text)
+        if let outputText = response.outputTranscription?.text {
+            currentOutputTranscription += outputText
+            callbacks?.onPartialTranscript(text: currentOutputTranscription, isUser: false)
+        }
+        
+        // 4. Handle User Input (STT)
+        if let inputText = response.inputTranscription?.text {
+            currentInputTranscription += inputText
+            callbacks?.onPartialTranscript(text: currentInputTranscription, isUser: true)
+        }
+        
+        // 5. Handle Turn Completion
+        if response.turnComplete {
+            finalizeTurn(timestamp: currentTime)
+        }
     }
-
-    // --- Audio Handling ---
-
-    private func startMicrophone() {
-        // TODO: This is where you would implement audio recording using AVAudioEngine.
-        // It captures microphone input and sends it to `liveSession?.sendAudioRealtime(data)`.
-        // This part is complex. For now, we can simulate sending data or leave it pending.
-        print("Microphone recording should start here.")
+    
+    private func finalizeTurn(timestamp: Int64) {
+        if !currentInputTranscription.isEmpty {
+            callbacks?.onMessage(text: currentInputTranscription, isUser: true, timestamp: timestamp)
+            callbacks?.onPartialTranscript(text: "", isUser: true)
+            currentInputTranscription = ""
+        }
+        if !currentOutputTranscription.isEmpty {
+            callbacks?.onMessage(text: currentOutputTranscription, isUser: false, timestamp: timestamp)
+            callbacks?.onPartialTranscript(text: "", isUser: false)
+            currentOutputTranscription = ""
+        }
     }
+    
+    private func startRecording() throws {
+        let audioSession = AVAudioSession.sharedInstance()
+        try audioSession.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth])
+        try audioSession.setActive(true)
 
-    private func stopMicrophone() {
-        // TODO: Stop the AVAudioEngine.
-        print("Microphone recording should stop here.")
+        let inputNode = audioEngine.inputNode
+        let srate = sampleRate
+        inputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: srate, channels: 1, interleaved: false)
+        
+        inputNode.installTap(onBus: 0, bufferSize: 1024, format: inputFormat) { [weak self] buffer, time in
+            self?.processAudioBuffer(buffer)
+        }
+        
+        try audioEngine.start()
+        playerNode.play()
     }
-
+    
+    private func stopRecording() {
+        audioEngine.inputNode.removeTap(onBus: 0)
+        audioEngine.stop()
+        playerNode.stop()
+        
+        try? AVAudioSession.sharedInstance().setActive(false)
+    }
+    
+    private func processAudioBuffer(_ buffer: AVAudioPCMBuffer) {
+        guard let liveSession = liveSession else { return }
+        
+        let data = Data(buffer: buffer)
+        
+        lock.lock()
+        fullAudioData.append(data)
+        lock.unlock()
+        
+        // Calculate volume for UI
+        let volume = calculateVolume(buffer)
+        DispatchQueue.main.async {
+            self.callbacks?.onVolumeUpdate(volume: volume)
+        }
+        
+        Task {
+            try? await liveSession.sendAudioRealtime(data: data)
+        }
+    }
+    
     private func playAudio(data: Data) {
-        do {
-            // Stop any currently playing audio
-            audioPlayer?.stop()
-            // Initialize the audio player with the new data from Gemini
-            audioPlayer = try AVAudioPlayer(data: data)
-            audioPlayer?.play()
-        } catch {
-            print("Error playing audio: \(error.localizedDescription)")
-            self.callbacks?.onError(error: error)
+        guard let outputFormat = outputFormat else { return }
+        guard let buffer = AVAudioPCMBuffer(data: data, format: outputFormat) else { return }
+        
+        playerNode.scheduleBuffer(buffer, at: nil, options: [], completionHandler: nil)
+        if !playerNode.isPlaying {
+            playerNode.play()
+        }
+    }
+    
+    private func calculateVolume(_ buffer: AVAudioPCMBuffer) -> Float {
+        guard let channelData = buffer.int16ChannelData?[0] else { return 0 }
+        let length = Int(buffer.frameLength)
+        
+        var sum: Double = 0
+        for i in 0..<length {
+            let sample = Double(channelData[i])
+            sum += sample * sample
+        }
+        
+        let rms = sqrt(sum / Double(length))
+        let normalizedRms = Float(rms / 32767.0)
+        return max(0, min(1, normalizedRms))
+    }
+}
+
+extension Data {
+    init(buffer: AVAudioPCMBuffer) {
+        let audioBuffer = buffer.audioBufferList.pointee.mBuffers
+        self.init(bytes: audioBuffer.mData!, count: Int(audioBuffer.mDataByteSize))
+    }
+}
+
+extension AVAudioPCMBuffer {
+    convenience init?(data: Data, format: AVAudioFormat) {
+        let streamDescriptor = format.streamDescription.pointee
+        let frameCapacity = UInt32(data.count) / streamDescriptor.mBytesPerFrame
+        self.init(pcmFormat: format, frameCapacity: frameCapacity)
+        self.frameLength = frameCapacity
+        
+        let audioBuffer = self.audioBufferList.pointee.mBuffers
+        data.withUnsafeBytes { (bufferPointer: UnsafeRawBufferPointer) in
+            _ = memcpy(audioBuffer.mData, bufferPointer.baseAddress, data.count)
         }
     }
 }

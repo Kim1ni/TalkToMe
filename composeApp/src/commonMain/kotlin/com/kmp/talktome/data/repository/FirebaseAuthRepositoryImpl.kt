@@ -5,13 +5,17 @@ import com.kmp.talktome.domain.model.User
 import com.kmp.talktome.domain.repository.AuthRepository
 import com.kmp.talktome.domain.util.Result
 import dev.gitlive.firebase.auth.FirebaseAuth
+import dev.gitlive.firebase.auth.FirebaseAuthUserCollisionException
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.GoogleAuthProvider
 import dev.gitlive.firebase.firestore.FirebaseFirestore
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+
+private const val TAG = "FirebaseAuthRepositoryImpl"
 
 class FirebaseAuthRepositoryImpl(
     private val auth: FirebaseAuth,
@@ -65,9 +69,9 @@ class FirebaseAuthRepositoryImpl(
                 saveUserToFirestore(user, merge = true)
                 Result.Success(user)
             } ?: Result.Error(Exception("Link failed"))
-        } /*catch (e: FirebaseAuthenticationUserCollisionException) {
-            Result.Error(Exception("This Google account is already in use. Please sign in with Google directly."))
-        }*/ catch (e: Exception) {
+        } catch (e: FirebaseAuthUserCollisionException) {
+            Result.Error(Exception("Account already linked: ${e.message}, just sign out, and sign in with Google"))
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }
@@ -79,7 +83,6 @@ class FirebaseAuthRepositoryImpl(
 
             currentUser.updateProfile(displayName = name)
 
-            // Update in Firestore
             firestore
                 .collection(FirestoreCollections.USERS)
                 .document(currentUser.uid)
@@ -106,8 +109,7 @@ class FirebaseAuthRepositoryImpl(
                 .document(user.uid)
                 .set(data = user, merge = merge)
         } catch (e: Exception) {
-            // Log error but don't fail the sign in
-            println("Failed to save user to Firestore: ${e.message}")
+            Napier.e(message = "Failed to save user to Firestore: ${e.message}", tag = TAG)
         }
     }
 

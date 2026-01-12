@@ -1,11 +1,14 @@
 package com.kmp.talktome.domain.model
 
+import kotlinx.serialization.Serializable
 import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Custom therapist persona created by user or default
  */
-data class CustomPersona(
+@Serializable
+data class CustomPersona @OptIn(ExperimentalTime::class) constructor(
     val id: String = "",
     val name: String,
     val description: String,

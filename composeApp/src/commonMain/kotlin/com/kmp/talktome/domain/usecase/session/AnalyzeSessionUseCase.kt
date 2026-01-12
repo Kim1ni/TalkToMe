@@ -1,20 +1,40 @@
 package com.kmp.talktome.domain.usecase.session
 
-import com.kmp.talktome.domain.live.GeminiAnalysisService
-import com.kmp.talktome.domain.model.Session
-import com.kmp.talktome.domain.model.SessionAnalysis
-import com.kmp.talktome.domain.repository.SessionRepository
+import com.kmp.talktome.BuildKonfig
+import com.kmp.talktome.domain.util.Result
+import dev.shreyaspatil.ai.client.generativeai.GenerativeModel
+import dev.shreyaspatil.ai.client.generativeai.type.Schema
+import dev.shreyaspatil.ai.client.generativeai.type.content
+import dev.shreyaspatil.ai.client.generativeai.type.generationConfig
+import org.koin.core.component.KoinComponent
+
 
 class AnalyzeSessionUseCase(
-    private val geminiAnalysisService: GeminiAnalysisService,
-    private val sessionRepository: SessionRepository
-) {
-    suspend operator fun invoke(session: Session): Result<SessionAnalysis> {
-        return geminiAnalysisService.analyzeTranscript(session.transcript)
-            .onSuccess { analysis ->
-                // Update session with analysis
-                val updatedSession = session.copy(analysis = analysis)
-                sessionRepository.updateSession(updatedSession)
+    schema: Schema<*>
+) : KoinComponent {
+
+    private val generativeModel = GenerativeModel(
+        modelName = BuildKonfig.MODEL_NAME,
+        apiKey = BuildKonfig.GEMINI_API_KEY,
+        generationConfig = generationConfig {
+            responseMimeType = "application/json"
+            responseSchema = schema
+        }
+    )
+
+    suspend fun generateResponse(prompt: String): Result<String> {
+        val inputContent = content { text(prompt) }
+
+        return try {
+            val response = generativeModel.generateContent(inputContent).text
+
+            if (!response.isNullOrBlank()) {
+                Result.Success(response)
+            } else {
+                Result.Error(Exception("Empty or null response from model"))
             }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
     }
 }

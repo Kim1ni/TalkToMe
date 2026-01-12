@@ -7,11 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
 
 class AuthViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase
-) : ViewModel(), KoinComponent {
+) : ViewModel()    {
 
     private val _state: MutableStateFlow<AuthState> = MutableStateFlow(AuthState.LOADING)
     val state: StateFlow<AuthState> = _state.asStateFlow()
@@ -31,4 +30,10 @@ class AuthViewModel(
             }
         }
     }
+}
+
+enum class AuthState {
+    AUTHENTICATED,
+    UNAUTHENTICATED,
+    LOADING
 }

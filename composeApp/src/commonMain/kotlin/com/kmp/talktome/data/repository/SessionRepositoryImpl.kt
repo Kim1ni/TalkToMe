@@ -4,17 +4,21 @@ import com.kmp.talktome.data.firebase.FirestoreCollections
 import com.kmp.talktome.domain.model.Session
 import com.kmp.talktome.domain.repository.SessionRepository
 import com.kmp.talktome.domain.util.Result
-import dev.gitlive.firebase.Firebase
+import com.kmp.talktome.uploadByteArray
 import dev.gitlive.firebase.firestore.Direction
-import dev.gitlive.firebase.firestore.firestore
-import dev.gitlive.firebase.storage.storage
+import dev.gitlive.firebase.firestore.FirebaseFirestore
+import dev.gitlive.firebase.storage.Data
+import dev.gitlive.firebase.storage.FirebaseStorage
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import dev.gitlive.firebase.storage.Data as StorageData
 
-class SessionRepositoryImpl : SessionRepository {
-    private val firestore = Firebase.firestore
-    private val storage = Firebase.storage
+private const val TAG = "SessionRepositoryImpl"
+
+class SessionRepositoryImpl(
+    private val firestore: FirebaseFirestore,
+    private val storage: FirebaseStorage
+) : SessionRepository {
 
     override fun getUserSessions(userId: String): Flow<List<Session>> {
         return firestore
@@ -27,7 +31,7 @@ class SessionRepositoryImpl : SessionRepository {
                     try {
                         doc.data<Session>()
                     } catch (e: Exception) {
-                        println("Error parsing session: ${e.message}")
+                        Napier.e(message = "Error parsing session: ${e.message}", tag= TAG)
                         null
                     }
                 }
@@ -46,6 +50,7 @@ class SessionRepositoryImpl : SessionRepository {
                     try {
                         doc.data<Session>()
                     } catch (e: Exception) {
+                        Napier.e(message = "Error getting recent sessions: ${e.message}", tag = TAG)
                         null
                     }
                 }
@@ -62,6 +67,7 @@ class SessionRepositoryImpl : SessionRepository {
             val session = document.data<Session>()
             Result.Success(session)
         } catch (e: Exception) {
+            Napier.e(message = "Error getting session by ID: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -74,6 +80,7 @@ class SessionRepositoryImpl : SessionRepository {
                 .set(session)
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error saving session: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -89,6 +96,7 @@ class SessionRepositoryImpl : SessionRepository {
                 )
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error updating session: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -111,6 +119,7 @@ class SessionRepositoryImpl : SessionRepository {
 
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error deleting session: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -121,13 +130,14 @@ class SessionRepositoryImpl : SessionRepository {
         audioData: ByteArray
     ): Result<String> {
         return try {
-            val path = "audio/$userId/$sessionId.aac"
+            val path = "audio/$userId/$sessionId.m4a"
             val ref = storage.reference.child(path)
 
-            ref.putData(audioData as Any as StorageData)
+            ref.uploadByteArray(audioData)
 
             Result.Success(path)
         } catch (e: Exception) {
+            Napier.e(message = "Error uploading audio: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -138,6 +148,7 @@ class SessionRepositoryImpl : SessionRepository {
             val url = storage.reference.child(path).getDownloadUrl()
             Result.Success(url)
         } catch (e: Exception) {
+            Napier.e(message = "Error getting audio URL: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }
@@ -147,6 +158,7 @@ class SessionRepositoryImpl : SessionRepository {
             storage.reference.child(path).delete()
             Result.Success(Unit)
         } catch (e: Exception) {
+            Napier.e(message = "Error deleting audio: ${e.message}", tag = TAG)
             Result.Error(e)
         }
     }

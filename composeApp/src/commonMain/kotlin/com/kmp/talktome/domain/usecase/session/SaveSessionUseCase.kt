@@ -7,11 +7,13 @@ import com.kmp.talktome.domain.repository.SessionRepository
 import com.kmp.talktome.domain.util.Result
 import com.kmp.talktome.domain.util.map
 import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class SaveSessionUseCase(
     private val sessionRepository: SessionRepository,
     private val authRepository: AuthRepository
 ) {
+    @OptIn(ExperimentalTime::class)
     suspend operator fun invoke(
         transcript: List<TranscriptMessage>,
         durationSeconds: Int,
@@ -49,6 +51,7 @@ class SaveSessionUseCase(
             .map { session }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun generateSessionId(): String {
         return "session_${Clock.System.now().toEpochMilliseconds()}_${(0..9999).random()}"
     }

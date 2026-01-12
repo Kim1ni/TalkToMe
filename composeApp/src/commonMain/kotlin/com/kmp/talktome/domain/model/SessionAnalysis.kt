@@ -25,14 +25,25 @@ data class SessionAnalysis(
         }
     }
 
+    fun getSentimentLabel(): String {
+        return when {
+            sentimentScore >= 80 -> "Positive"
+            sentimentScore >= 60 -> "Stable"
+            sentimentScore >= 40 -> "Below baseline"
+            sentimentScore >= 20 -> "Low"
+            sentimentScore >= 0 -> "Very Low"
+            else -> "Reflecting"
+        }
+    }
+
     /**
      * Get color for sentiment score
      */
     fun getSentimentColor(): Int {
-        return when (getSentimentLevel()) {
-            SentimentLevel.POSITIVE -> 0xFF4CAF50.toInt() // Green
-            SentimentLevel.NEUTRAL -> 0xFFFFC107.toInt() // Amber
-            SentimentLevel.NEGATIVE -> 0xFFF44336.toInt() // Red
+        return when(getSentimentLevel()) {
+            SentimentLevel.NEGATIVE -> 0xFFF44336.toInt()
+            SentimentLevel.POSITIVE -> 0xFF4CAF50.toInt()
+            SentimentLevel.NEUTRAL -> 0xFFFFC107.toInt()
         }
     }
 

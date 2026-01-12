@@ -6,9 +6,11 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 class CalculateStreakUseCase {
+    @OptIn(ExperimentalTime::class)
     operator fun invoke(sessions: List<Session>): Int {
         if (sessions.isEmpty()) return 0
 

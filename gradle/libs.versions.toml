@@ -6,6 +6,10 @@ android-minSdk = "24"
 android-targetSdk = "36"
 androidx-activityCompose = "1.12.2"
 androidx-lifecycle = "2.9.6"
+androidx-lifecycleViewModel = "2.10.0"
+multiplatformSettings = "1.3.0"
+multiplatformSettingsCoroutines = "1.3.0"
+navigation3 = "1.0.0-alpha06"
 coilCompose = "3.3.0"
 composeMultiplatform = "1.9.3"
 buildkonfig = "0.17.1"
@@ -17,6 +21,7 @@ kotlin = "2.3.0"
 ktor = "3.3.3"
 kotlinxDatetime = "0.7.1"
 google = "4.4.4"
+moko = "0.18.0"
 serialization = "1.9.0"
 generativeai = "0.9.0-1.1.0"
 notifier = "1.6.1"
@@ -24,7 +29,9 @@ firebase = "2.4.0"
 splash = "1.2.0"
 messagebar = "1.0.9"
 navigation = "2.7.0-alpha07"
-
+blah = "2.9.6"
+napier = "2.7.1"
+vico = "2.4.1"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -37,11 +44,18 @@ kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotl
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycleViewModel"}
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "blah" }
+androidx-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
 generativeai = { module = "dev.shreyaspatil.generativeai:generativeai-google", version.ref = "generativeai" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
+multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformSettingsCoroutines" }
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 splash-screen = { module = "androidx.core:core-splashscreen" , version.ref ="splash" }
 
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
@@ -69,6 +83,10 @@ ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref =
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+
+vico-multiplatform = { group = "com.patrykandpatrick.vico", name = "multiplatform", version.ref = "vico" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

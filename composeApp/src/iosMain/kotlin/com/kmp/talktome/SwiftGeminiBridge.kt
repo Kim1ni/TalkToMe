@@ -5,7 +5,7 @@ import com.kmp.talktome.domain.model.SessionConfig
 
 interface SwiftGeminiBridge {
 
-    suspend fun connect(config: SessionConfig, callbacks: LiveSessionCallbacks): Result<Unit>
-    suspend fun disconnect(): Result<ByteArray?>
+    suspend fun connect(config: SessionConfig, modelName: String, callbacks: LiveSessionCallbacks)
+    suspend fun disconnect(): ByteArray?
 
 }

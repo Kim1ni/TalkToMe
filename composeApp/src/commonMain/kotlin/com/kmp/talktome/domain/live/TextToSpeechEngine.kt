@@ -20,5 +20,3 @@ interface TextToSpeechEngine {
     fun shutdown()
 
 }
-
-expect fun getTextToSpeechEngine(): TextToSpeechEngine

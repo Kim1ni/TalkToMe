@@ -6,6 +6,29 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kmp.talktome.domain.model.Session
 
+/**
+ * App navigation destinations
+ */
+sealed class Screen(val route: String) {
+
+    object Login : Screen("login")
+
+    // Main
+    object Home : Screen("home")
+    object Profile : Screen("profile")
+    object History : Screen("history")
+
+    object Personas : Screen("personas")
+    object Session : Screen("session")
+    object SessionDetails : Screen("details/{$ARG_SESSION_ID}") {
+        fun createRoute(sessionId: String) = "details/$sessionId"
+    }
+
+    companion object {
+        const val ARG_SESSION_ID = "sessionId"
+    }
+}
+
 class AppState(val navController: NavHostController) {
 
     fun navigateBack() {
@@ -24,24 +47,18 @@ class AppState(val navController: NavHostController) {
         navController.navigate(Screen.History.route)
     }
 
+    fun navigateToPersonas() {
+        navController.navigate(Screen.Personas.route)
+    }
+
     fun navigateToSession() {
         navController.navigate(Screen.Session.route)
     }
 
-    fun onSessionSelected(session: Session) {
+    fun navigateToSessionDetails(session: Session) {
         navController.navigate(Screen.SessionDetails.createRoute(session.id))
     }
-/*
-    fun navigateToAnalysis(sessionId: String) {
-        navController.navigate(Screen.Analysis.createRoute(sessionId))
-    }*/
-    fun navigateToAnalysis() {
-        navController.navigate(Screen.Analysis.route)
-    }
 
-    fun navigateToSessionDetails(sessionId: String) {
-        navController.navigate(Screen.SessionDetails.createRoute(sessionId))
-    }
 }
 
 
@@ -50,3 +67,4 @@ fun rememberAppState(myNavController: NavHostController = rememberNavController(
     remember {
         AppState(myNavController)
     }
+

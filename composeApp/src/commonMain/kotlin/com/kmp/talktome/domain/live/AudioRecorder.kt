@@ -8,5 +8,3 @@ interface AudioRecorder {
     suspend fun startRecording()
     suspend fun stopRecording(): ByteArray?
 }
-
-expect fun getAudioRecorder(): AudioRecorder

@@ -22,18 +22,20 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.kmp.talktome.ui.features.analysis.AnalysisScreen
-import com.kmp.talktome.ui.features.history.HistoryScreen
-import com.kmp.talktome.ui.features.home.HomeScreen
-import com.kmp.talktome.ui.features.login.LoginScreen
-import com.kmp.talktome.ui.features.profile.ProfileScreen
-import com.kmp.talktome.ui.features.session.SessionScreen
-import com.kmp.talktome.ui.features.session_details.SessionDetailsScreen
+import com.kmp.talktome.ui.composables.BottomNavigationBar
+import com.kmp.talktome.ui.screens.history.HistoryScreen
+import com.kmp.talktome.ui.screens.home.HomeScreen
+import com.kmp.talktome.ui.screens.login.LoginScreen
+import com.kmp.talktome.ui.screens.persona.PersonaScreen
+import com.kmp.talktome.ui.screens.profile.ProfileScreen
+import com.kmp.talktome.ui.screens.session.SessionScreen
+import com.kmp.talktome.ui.screens.session_details.SessionDetailsScreen
+import com.kmp.talktome.ui.theme.TalkToMeTheme
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import talktome.composeapp.generated.resources.Res
 import talktome.composeapp.generated.resources.icon_app_icon
-
 
 @Composable
 fun SetUpNavGraph(
@@ -119,21 +121,14 @@ fun AppScaffold(
                 )
             }
 
-            composable(
-                route = Screen.Analysis.route
-            ) {
-                AnalysisScreen()
-            }
-
             composable(Screen.Home.route) {
                 HomeScreen(
-                    mainPaddingValues = paddingValues,
                     onStartSession = appState::navigateToSession,
                 )
             }
             composable(Screen.Session.route) {
                 SessionScreen(
-                    onSessionComplete = appState::navigateToAnalysis,
+                    onSessionComplete = appState::navigateToHome,
                     onCancel = appState::navigateBack
                 )
             }
@@ -151,14 +146,28 @@ fun AppScaffold(
             }
 
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(
+                    onNavigateToPersonas = appState::navigateToPersonas
+                )
             }
-            composable(Screen.History.route) {
-                HistoryScreen(
-                    onSessionSelected = appState::onSessionSelected,
+            composable(Screen.Personas.route) {
+                PersonaScreen(
                     onBackPressed = appState::navigateBack
                 )
             }
+            composable(Screen.History.route) {
+                HistoryScreen(
+                    onNavigateToSessionDetails = appState::navigateToSessionDetails
+                )
+            }
         }
+    }
+}
+
+@Preview
+@Composable
+fun SplashScreenPreview() {
+    TalkToMeTheme {
+        SplashScreen()
     }
 }
