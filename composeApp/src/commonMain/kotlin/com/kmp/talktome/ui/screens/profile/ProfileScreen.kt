@@ -58,7 +58,7 @@ fun ProfileScreen(
             onUpdateName = viewModel::updateName,
             onStartEditName = viewModel::startEditingName,
             onLinkAccount = viewModel::linkGoogleAccount,
-            onNotificationToggle = viewModel::toggleNotifications,
+            onNotificationToggle = {},//viewModel::toggleNotifications,
             onThemeToggle = viewModel::toggleTheme,
             onNavigateToPersonas = onNavigateToPersonas,
             onSignOut = viewModel::signOut

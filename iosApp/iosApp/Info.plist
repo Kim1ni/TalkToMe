@@ -4,5 +4,30 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- 1. Google Sign-In Client ID (from CLIENT_ID in GoogleService-Info.plist) -->
+    <key>GIDClientID</key>
+    <string>542869843440-uc8u761ts4cll0el4551732f3tortqaa.apps.googleusercontent.com</string>
+
+    <!-- 2. Web Client ID (from your Firebase Console / Google Cloud Console) -->
+    <key>GIDServerClientID</key>
+    <string>542869843440-1khmqp706efskkpet9q275rucjfr2o6m.apps.googleusercontent.com</string>
+
+    <!-- 3. Custom URL Scheme for Google Auth Redirect -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- This is the REVERSED_CLIENT_ID from your GoogleService-Info.plist -->
+                <string>com.googleusercontent.apps.542869843440-uc8u761ts4cll0el4551732f3tortqaa</string>
+            </array>
+        </dict>
+    </array>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app requires microphone access to record audio.</string>
+
 </dict>
 </plist>

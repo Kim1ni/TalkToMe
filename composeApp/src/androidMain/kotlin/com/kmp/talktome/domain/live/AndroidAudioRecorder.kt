@@ -54,7 +54,7 @@ class AndroidAudioRecorder(
         recorder?.release()
         audioStream?.close()
 
-        outputFile = File.createTempFile("audio", ".m4a", outputDir)
+        outputFile = File.createTempFile("audio", ".wav", outputDir)
         audioStream = ByteArrayOutputStream()
 
         recorder = createRecorder().apply {

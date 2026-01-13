@@ -1,7 +1,6 @@
 package com.kmp.talktome.di
 
 import com.kmp.talktome.domain.model.SessionAnalysis
-import com.kmp.talktome.domain.permissions.PermissionManager
 import com.kmp.talktome.domain.usecase.home.CalculateStreakUseCase
 import com.kmp.talktome.domain.usecase.todo.DeleteTodoUseCase
 import com.kmp.talktome.domain.usecase.home.GetDashboardDataUseCase
@@ -49,6 +48,4 @@ val domainModule = module {
     factory { ToggleTodoUseCase(get()) }
     factory { AddTodoReflectionUseCase(get()) }
 
-
-    single<PermissionManager> { PermissionManager(get()) }
 }

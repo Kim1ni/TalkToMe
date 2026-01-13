@@ -33,7 +33,6 @@ import com.kmp.talktome.ui.screens.session.composables.SessionHeader
 import com.kmp.talktome.ui.screens.session.composables.TranscriptOverlay
 import com.kmp.talktome.ui.theme.TalkToMeTheme
 import dev.icerock.moko.permissions.PermissionState
-import dev.icerock.moko.permissions.compose.BindEffect
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,7 +49,6 @@ fun SessionScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    BindEffect(viewModel.permissionManager.controller)
 
     LaunchedEffect(Unit) {
         if (state.status == SessionStatus.IDLE) {

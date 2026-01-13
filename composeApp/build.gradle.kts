@@ -108,6 +108,7 @@ kotlin {
             //Permissions
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
+            implementation(libs.androidx.preference)
 
         }
 

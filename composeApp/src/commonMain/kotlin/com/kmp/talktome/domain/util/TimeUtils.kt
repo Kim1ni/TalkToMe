@@ -11,11 +11,35 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import kotlinx.datetime.minus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import kotlin.time.Clock
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+
+val TIME_ZONE: TimeZone = TimeZone.currentSystemDefault()
+
+@OptIn(ExperimentalTime::class)
+fun getNotificationTime(time: LocalDateTime): LocalDateTime =
+    (Clock.System.now() + getNotificationDelay(time)).toLocalDateTime(TIME_ZONE)
+
+@OptIn(ExperimentalTime::class)
+fun getNotificationDelay(notificationTime: LocalDateTime): Duration  {
+    val speedMultiplier = 20.0
+    val instantNotificationTime = notificationTime.toInstant(TIME_ZONE)
+    val instantNow = now().toInstant(TIME_ZONE)
+    val instantNotificationDelay = instantNotificationTime.minus(instantNow) / speedMultiplier
+
+    return instantNotificationDelay
+}
+
+
+@OptIn(ExperimentalTime::class)
+fun now(): LocalDateTime = Clock.System.now().toLocalDateTime(TIME_ZONE)
+
+
 
 val dateFormatter = LocalDateTime.Format {
     monthName(MonthNames.ENGLISH_ABBREVIATED)

@@ -1,7 +1,6 @@
 package com.kmp.talktome.ui.screens.session
 
 import androidx.lifecycle.ViewModel
-import com.kmp.talktome.PermissionHandler
 import com.kmp.talktome.di.viewModelScope
 import com.kmp.talktome.domain.live.GeminiLiveService
 import com.kmp.talktome.domain.model.AIVoice
@@ -13,7 +12,6 @@ import com.kmp.talktome.domain.model.SessionConfig
 import com.kmp.talktome.domain.model.SessionStatus
 import com.kmp.talktome.domain.model.TranscriptMessage
 import com.kmp.talktome.domain.model.TranscriptRole
-import com.kmp.talktome.domain.permissions.PermissionManager
 import com.kmp.talktome.domain.repository.AuthRepository
 import com.kmp.talktome.domain.repository.PreferencesRepository
 import com.kmp.talktome.domain.usecase.session.AnalyzeSessionUseCase
@@ -25,9 +23,7 @@ import com.kmp.talktome.domain.usecase.todo.CreateTodosFromAnalysisUseCase
 import com.kmp.talktome.domain.util.onError
 import com.kmp.talktome.domain.util.onSuccess
 import dev.icerock.moko.permissions.PermissionState
-import dev.icerock.moko.permissions.PermissionsController
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +33,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import org.koin.core.component.KoinComponent
 
 
 private const val TAG = "SessionViewModel"
@@ -53,7 +48,6 @@ class SessionViewModel(
     private val geminiLiveService: GeminiLiveService,
     private val authRepository: AuthRepository,
     //private val permissionHandler: PermissionHandler
-    val permissionManager: PermissionManager
 ): ViewModel() {
     private val _state = MutableStateFlow(SessionState())
     val state: StateFlow<SessionState> = _state.asStateFlow()
@@ -66,7 +60,7 @@ class SessionViewModel(
 
     private fun observePermissions() {
         viewModelScope.launch {
-            _state.update { it.copy(microphonePermissionState = permissionManager.microphoneState.value) }
+            //_state.update { it.copy(microphonePermissionState = permissionManager.microphoneState.value) }
 //            permissionHandler.observeMicrophonePermission().collect { granted ->
 //                _state.update { it.copy(hasMicrophonePermission = granted) }
 //            }
@@ -75,16 +69,17 @@ class SessionViewModel(
 
     fun onPermissionAction() {
         if (state.value.microphonePermissionState == PermissionState.DeniedAlways) {
-            permissionManager.openAppSettings()
+            //permissionManager.openAppSettings()
         } else {
             startSession()}
     }
     fun startSession() {
         viewModelScope.launch {
-            var status = permissionManager.checkMicrophonePermission()
+            /*var status = permissionManager.checkMicrophonePermission()
             if (status == PermissionState.NotDetermined) {
                 status = permissionManager.requestMicrophonePermission()
-            }
+            }*/
+            val status = PermissionState.Granted
 
             _state.update { it.copy(microphonePermissionState = status) }
 

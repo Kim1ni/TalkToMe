@@ -19,6 +19,7 @@ import com.kmp.talktome.ui.screens.persona.composables.PersonaEditorModal
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import talktome.composeapp.generated.resources.Res
+import talktome.composeapp.generated.resources.icon_add
 import talktome.composeapp.generated.resources.icon_check
 
 @Composable
@@ -44,7 +45,7 @@ fun PersonaScreen(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.icon_check),
+                    painter = painterResource(Res.drawable.icon_add),
                     contentDescription = "Add Therapist",
                     modifier = Modifier.size(24.dp)
                 )

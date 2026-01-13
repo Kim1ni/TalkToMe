@@ -46,6 +46,8 @@ import kotlin.time.ExperimentalTime
 
 private const val TAG = "GeminiLiveService"
 
+// Define a sensitivity threshold (0.0 to 1.0)
+
 class AndroidGeminiLiveService : GeminiLiveService {
 
     private lateinit var liveSession: LiveSession
@@ -159,7 +161,6 @@ class AndroidGeminiLiveService : GeminiLiveService {
         audioTrack?.play()
     }
 
-
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     private fun startRecording(callbacks: LiveSessionCallbacks) {
         serviceScope.launch {
@@ -184,11 +185,51 @@ class AndroidGeminiLiveService : GeminiLiveService {
         }
     }
 
+/*
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    private fun startRecording(callbacks: LiveSessionCallbacks) {
+        serviceScope.launch {
+            Napier.d("Recording...", tag = TAG)
+            audioRecord?.startRecording()
+            val buffer = ByteArray(recordBufferSize)
+
+            while (isActive) {
+                val read = audioRecord?.read(buffer, 0, recordBufferSize) ?: 0
+                if (read > 0) {
+                    val audioData = buffer.copyOf(read)
+                    liveSession.sendAudioRealtime(InlineData(audioData, "audio/pcm"))
+
+                    val volume = calculateVolume(audioData)
+
+                    // --- LOCAL INTERRUPTION LOGIC ---
+                    if (volume > VOICE_AUDIO_DETECTION_THRESHOLD) {
+                        // User is speaking! Silence the AI immediately locally.
+                        muteModelAudio()
+                    }
+
+                    callbacks.onVolumeUpdate(volume)
+                }
+            }
+        }
+    }
+
+    private fun muteModelAudio() {
+        // We don't use stop() here because we want to keep the track
+        // in a state where it can immediately accept new data later.
+        audioTrack?.apply {
+            if (playState == AudioTrack.PLAYSTATE_PLAYING) {
+                pause()
+                flush()
+                play()
+            }
+        }
+    }
+*/
     private fun playAudio(data: ByteArray) {
         Napier.d(message = "Playing audio... ${data.size}", tag = TAG)
         audioTrack?.write(data, 0, data.size)
     }
-
+/*
     private fun calculateVolume(audioData: ByteArray): Float {
         // Audio data is PCM 16-bit, so we process it as shorts (2 bytes per sample)
         if (audioData.isEmpty()) return 0f
@@ -208,44 +249,56 @@ class AndroidGeminiLiveService : GeminiLiveService {
         return normalizedRms.toFloat().coerceIn(0f, 1f)
 
     }
+*/
+    private fun calculateVolume(audioData: ByteArray): Float {
+        if (audioData.isEmpty()) return 0f
+        val shorts = ShortArray(audioData.size / 2)
+        ByteBuffer.wrap(audioData).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts)
+
+        var sum = 0.0
+        for (s in shorts) {
+            sum += s.toDouble() * s.toDouble()
+        }
+        val rms = sqrt(sum / shorts.size)
+        Napier.d(message = "Calculating volume: $rms")
+        return (rms / 32767.0).toFloat().coerceIn(0f, 1f)
+    }
 
     @OptIn(ExperimentalTime::class)
     private suspend fun handleResponse(response: LiveServerContent, callbacks: LiveSessionCallbacks) {
         val currentTime = Clock.System.now().toEpochMilliseconds()
 
-        // 1. Handle Audio Playback (Fire and forget)
-        response.content?.parts?.filterIsInstance<InlineDataPart>()?.forEach { audioPart ->
-            playAudio(audioPart.inlineData)
-        }
-
-        // 2. Critical Section for Text
         transcriptionMutex.withLock {
-            Napier.d(message = "Response interrupted: ${response.interrupted}", tag = TAG)
+            // 1. Handle Interruption FIRST
             if (response.interrupted) {
+                Napier.d(message = "Model interrupted by user", tag = TAG)
                 audioTrack?.apply {
-                    stop()
+                    pause() // Faster than stop() for immediate silence
                     flush()
                     play()
                 }
+                // Clear current output buffers immediately
                 currentOutputTranscription = ""
                 callbacks.onPartialTranscript("", isUser = false)
             }
 
-            // Handle Model Output
+            // 2. Process Audio Playback
+            response.content?.parts?.filterIsInstance<InlineDataPart>()?.forEach { audioPart ->
+                playAudio(audioPart.inlineData)
+            }
+
+            // 3. Update Transcripts
             response.outputTranscription?.let {
                 currentOutputTranscription += it.text
-                Napier.d(message = "Current Output Transcript: $currentOutputTranscription", tag = TAG)
                 callbacks.onPartialTranscript(currentOutputTranscription, isUser = false)
             }
 
-            // Handle User Input (STT)
             response.inputTranscription?.let {
                 currentInputTranscription += it.text
-                Napier.d(message = "Current Input Transcript: $currentInputTranscription", tag = TAG)
                 callbacks.onPartialTranscript(currentInputTranscription, isUser = true)
             }
 
-            Napier.d(message = "Turn Complete: ${response.turnComplete}", tag = TAG)
+            // 4. Finalize
             if (response.turnComplete) {
                 finalizeTurn(currentTime, callbacks)
             }

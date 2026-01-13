@@ -1,13 +1,14 @@
 package com.kmp.talktome.domain.repository
 
+import com.kmp.talktome.domain.model.NotificationSettings
+import com.kmp.talktome.domain.model.Theme
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
-    suspend fun setDarkMode(enabled: Boolean)
-    suspend fun getDarkMode(): Boolean
-    suspend fun observeDarkMode(): Flow<Boolean>
+    suspend fun setTheme(theme: Theme)
+    suspend fun getTheme(): Flow<Theme>
 
-    suspend fun setNotificationsEnabled(enabled: Boolean)
-    suspend fun getNotificationsEnabled(): Boolean
-    suspend fun observeNotificationsEnabled(): Flow<Boolean>
+
+    suspend fun setNotificationSettings(value: NotificationSettings)
+    suspend fun getNotificationSettings(): Flow<NotificationSettings?>
 }

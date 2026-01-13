@@ -8,7 +8,8 @@ class IOSAudioRecorder : AudioRecorder {
     var bridge: SwiftRecorderBridge? = null
 
     override val volumeFlow: StateFlow<Float>
-        get() = TODO("Not yet implemented")
+        get() = bridge?.volumeFlow ?: throw IllegalStateException("Bridge not initialized")
+
 
     override suspend fun startRecording() {
         bridge?.startRecording()

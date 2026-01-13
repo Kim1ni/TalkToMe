@@ -6,6 +6,7 @@ import com.kmp.talktome.domain.model.Theme
 import com.kmp.talktome.domain.notifications.NotificationManager
 import com.kmp.talktome.domain.repository.AuthRepository
 import com.kmp.talktome.domain.repository.PreferencesRepository
+import com.kmp.talktome.domain.repository.SettingsRepository
 import com.kmp.talktome.domain.util.onError
 import com.kmp.talktome.domain.util.onSuccess
 import io.github.aakira.napier.Napier
@@ -23,7 +24,8 @@ private const val TAG = "ProfileViewModel"
 class ProfileViewModel(
     private val authRepository: AuthRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val notificationManager: NotificationManager
+    private val notificationManager: NotificationManager,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
@@ -88,8 +90,14 @@ class ProfileViewModel(
         }
     }
 
-    fun toggleNotifications() {
-        Napier.d("toggleNotifications called", tag = TAG)
+    fun setTheme(theme: Theme) {
+        viewModelScope.launch {
+            settingsRepository.setTheme(theme = theme)
+        }
+    }
+
+    fun toggleNotificationSettings() {
+        Napier.d("toggleNotificationSettings called", tag = TAG)
         viewModelScope.launch {
             val currentEnabled = _state.value.preferences?.notificationsEnabled ?: false
 

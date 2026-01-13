@@ -8,7 +8,6 @@ import com.kmp.talktome.ui.screens.persona.PersonaViewModel
 import com.kmp.talktome.ui.screens.profile.ProfileViewModel
 import com.kmp.talktome.ui.screens.session.SessionViewModel
 import com.kmp.talktome.ui.screens.session_details.SessionDetailsViewModel
-import com.kmp.talktome.ui.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -32,5 +31,4 @@ val uiModule = module {
     viewModelOf(::HistoryViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::PersonaViewModel)
-    viewModelOf(::SettingsViewModel)
 }

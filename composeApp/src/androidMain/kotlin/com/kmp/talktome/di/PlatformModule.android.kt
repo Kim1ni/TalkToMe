@@ -1,9 +1,8 @@
 package com.kmp.talktome.di
 
-import android.app.Application
-import com.kmp.talktome.AndroidPermissionHandler
-import com.kmp.talktome.PermissionHandler
-import com.kmp.talktome.SettingsFactory
+import androidx.preference.PreferenceManager
+import com.kmp.talktome.AndroidLocalNotificationService
+import com.kmp.talktome.LocalNotificationService
 import com.kmp.talktome.domain.live.AndroidAudioPlayer
 import com.kmp.talktome.domain.live.AndroidAudioRecorder
 import com.kmp.talktome.domain.live.AndroidGeminiLiveService
@@ -14,10 +13,10 @@ import com.kmp.talktome.domain.live.GeminiLiveService
 import com.kmp.talktome.domain.live.TextToSpeechEngine
 import com.kmp.talktome.domain.notifications.NotificationManager
 import com.kmp.talktome.domain.notifications.getNotificationManager
-import com.russhwolf.settings.Settings
+import com.russhwolf.settings.ObservableSettings
+import com.russhwolf.settings.SharedPreferencesSettings
 import dev.icerock.moko.permissions.PermissionsController
 import org.koin.android.ext.koin.androidContext
-import org.koin.compose.getKoin
 import org.koin.dsl.module
 
 
@@ -31,12 +30,11 @@ actual fun platformModule() = module {
 
     single<TextToSpeechEngine> { AndroidTextToSpeechEngine(androidContext()) }
 
-    single<Settings> { SettingsFactory.createSettings(androidContext()) }
+    single<ObservableSettings> {
+        SharedPreferencesSettings(PreferenceManager.getDefaultSharedPreferences(androidContext()))
+    }
 
     single<NotificationManager> { getNotificationManager() }
 
-    single<PermissionHandler> { AndroidPermissionHandler(androidContext()) }
-
-    single<PermissionsController> { PermissionsController(androidContext()) }
-
+    single<LocalNotificationService> { AndroidLocalNotificationService(androidContext() ) }
 }

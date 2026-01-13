@@ -16,7 +16,6 @@ class MyApplication : Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
 
-        initPermissionHandler(this)
         initNotificationManager(this)
 
         Firebase.initialize(context = this)

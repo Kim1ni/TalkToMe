@@ -12,8 +12,6 @@ import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
-    private val permissionHandler: PermissionHandler by inject()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         val splashScreen = installSplashScreen()
@@ -22,16 +20,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             App()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (permissionHandler as? AndroidPermissionHandler)?.updatePermissionStates()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        (permissionHandler as? AndroidPermissionHandler)?.updatePermissionStates()
     }
 }
 
