@@ -40,6 +40,7 @@ kotlin {
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.7.0"))
 
             implementation(libs.firebase.ai)
+            implementation(libs.androidx.preference)
 
             implementation(libs.ktor.client.android)
         }
@@ -108,7 +109,7 @@ kotlin {
             //Permissions
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
-            implementation(libs.androidx.preference)
+            // implementation(libs.androidx.preference)
 
         }
 
