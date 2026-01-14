@@ -1,5 +1,6 @@
 package com.kmp.talktome.domain.model
 
+import com.kmp.talktome.domain.live.AIVoice
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime

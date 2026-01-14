@@ -2,8 +2,8 @@ package com.kmp.talktome.domain.live
 
 import com.kmp.talktome.BuildKonfig
 import com.kmp.talktome.SwiftGeminiBridge
-import com.kmp.talktome.domain.model.LiveSessionCallbacks
-import com.kmp.talktome.domain.model.SessionConfig
+import com.kmp.talktome.domain.live.LiveSessionCallbacks
+import com.kmp.talktome.domain.live.SessionConfig
 import com.kmp.talktome.domain.util.Result
 
 class IOSGeminiLiveService : GeminiLiveService {

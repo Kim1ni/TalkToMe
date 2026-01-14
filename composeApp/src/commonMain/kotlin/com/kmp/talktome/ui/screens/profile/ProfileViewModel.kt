@@ -2,6 +2,7 @@ package com.kmp.talktome.ui.screens.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kmp.talktome.domain.model.NotificationSettings
 import com.kmp.talktome.domain.model.Theme
 import com.kmp.talktome.domain.notifications.NotificationManager
 import com.kmp.talktome.domain.repository.AuthRepository
@@ -32,11 +33,11 @@ class ProfileViewModel(
     val state: StateFlow<ProfileState> = _state.asStateFlow()
 
     init {
-        loadUserData()
+        loadProfileInformation()
     }
 
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    private fun loadUserData() {
+    private fun loadProfileInformation() {
         Napier.d("loadUserData called", tag = TAG)
         viewModelScope.launch {
             authRepository.currentUser.flatMapLatest { user ->
@@ -56,6 +57,16 @@ class ProfileViewModel(
                         userName = user?.displayName ?: "Guest",
                         preferences = preferences
                     )
+                }
+            }
+            settingsRepository.getTheme().collectLatest { theme ->
+                _state.update {
+                    it.copy(selectedTheme = theme)
+                }
+            }
+            settingsRepository.getNotificationSettings().collectLatest { notificationSettings ->
+                _state.update {
+                    it.copy(notificationSettings = notificationSettings)
                 }
             }
         }
@@ -89,10 +100,29 @@ class ProfileViewModel(
             }
         }
     }
+    fun showThemeSelector() {
+        _state.update { it.copy(showSelectThemeDialog = true) }
+    }
+
+    fun dismissThemeSelector() {
+        _state.update { it.copy(showSelectThemeDialog = false) }
+    }
 
     fun setTheme(theme: Theme) {
         viewModelScope.launch {
+            Napier.d("setTheme called with: $theme", tag = TAG)
             settingsRepository.setTheme(theme = theme)
+            _state.update {
+                it.copy(selectedTheme = theme, showSelectThemeDialog = false)
+            }
+        }
+    }
+
+    fun setNotificationSettings(settings: NotificationSettings) {
+        viewModelScope.launch {
+            Napier.d("setNotificationSettings called with: $settings", tag = TAG)
+            settingsRepository.setNotificationSettings(value = settings)
+            _state.update { it.copy(notificationSettings = settings) }
         }
     }
 

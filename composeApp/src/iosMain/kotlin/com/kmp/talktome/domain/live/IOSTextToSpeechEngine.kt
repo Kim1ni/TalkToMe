@@ -1,6 +1,6 @@
 package com.kmp.talktome.domain.live
 
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import platform.AVFAudio.*
 import platform.darwin.NSObject
 

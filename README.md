@@ -3,7 +3,9 @@ Mental health support shouldn't feel clinical or transactional. **TalkToMe** is 
 # TalkToMe
 
 
-![logo_placeholder](assets/logo.png)
+<div align="center">
+  <img src="assets/logo.png" alt="logo_placeholder">
+</div>
 
 # Demo
 

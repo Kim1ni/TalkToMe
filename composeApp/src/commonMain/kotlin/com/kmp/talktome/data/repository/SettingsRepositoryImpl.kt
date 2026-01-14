@@ -34,15 +34,15 @@ class SettingsRepositoryImpl(
     override suspend fun setTheme(theme: Theme) = settings
         .set(Keys.THEME, theme.name)
 
-    override suspend fun getTheme(): Flow<Theme> = settings.getStringOrNullFlow(Keys.THEME)
+    override fun getTheme(): Flow<Theme> = settings.getStringOrNullFlow(Keys.THEME)
         .map { it?.let { Theme.valueOf(it) } ?: Theme.SYSTEM }
-
-    override suspend fun getNotificationSettings(): Flow<NotificationSettings?> =
-        settings.getStringOrNullFlow(Keys.NOTIFICATION_SETTINGS)
-            .map { it.decodeOrNull<NotificationSettings>() }
 
     override suspend fun setNotificationSettings(value: NotificationSettings) = settings
         .set(Keys.NOTIFICATION_SETTINGS, json.encodeToString(value))
+
+    override fun getNotificationSettings(): Flow<NotificationSettings?> =
+        settings.getStringOrNullFlow(Keys.NOTIFICATION_SETTINGS)
+            .map { it.decodeOrNull<NotificationSettings>() }
 
     private object Keys {
         const val THEME = "theme"

@@ -1,7 +1,7 @@
 package com.kmp.talktome
 
-import com.kmp.talktome.domain.model.LiveSessionCallbacks
-import com.kmp.talktome.domain.model.SessionConfig
+import com.kmp.talktome.domain.live.LiveSessionCallbacks
+import com.kmp.talktome.domain.live.SessionConfig
 
 interface SwiftGeminiBridge {
 

@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.ui.screens.session_details.models.PlaybackMode
 
 // PlaybackSettingsPopover.kt
@@ -186,7 +186,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.ui.screens.session_details.models.PlaybackMode
 
 @OptIn(ExperimentalMaterial3Api::class)

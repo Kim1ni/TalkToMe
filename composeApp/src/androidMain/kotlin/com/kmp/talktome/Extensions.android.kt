@@ -1,7 +1,6 @@
 package com.kmp.talktome
 
 import android.net.Uri
-import dev.gitlive.firebase.storage.FirebaseStorage
 import dev.gitlive.firebase.storage.StorageReference
 import java.io.File
 

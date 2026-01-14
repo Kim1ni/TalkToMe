@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kmp.talktome.domain.model.MoodInsight
+import com.kmp.talktome.ui.screens.home.models.MoodInsight
 import com.kmp.talktome.ui.theme.TalkToMeTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview

@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
     suspend fun setTheme(theme: Theme)
-    suspend fun getTheme(): Flow<Theme>
-
+    fun getTheme(): Flow<Theme>
 
     suspend fun setNotificationSettings(value: NotificationSettings)
-    suspend fun getNotificationSettings(): Flow<NotificationSettings?>
+    fun getNotificationSettings(): Flow<NotificationSettings?>
+
 }

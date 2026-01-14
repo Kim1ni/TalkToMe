@@ -1,4 +1,4 @@
-package com.kmp.talktome.domain.model
+package com.kmp.talktome.ui.screens.home.models
 
 data class MoodInsight(
     val topic: String,

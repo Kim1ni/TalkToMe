@@ -3,12 +3,12 @@ package com.kmp.talktome.ui.screens.session
 import androidx.lifecycle.ViewModel
 import com.kmp.talktome.di.viewModelScope
 import com.kmp.talktome.domain.live.GeminiLiveService
-import com.kmp.talktome.domain.model.AIVoice
+import com.kmp.talktome.domain.live.AIVoice
 import com.kmp.talktome.domain.model.CustomPersona
-import com.kmp.talktome.domain.model.LiveSessionCallbacks
+import com.kmp.talktome.domain.live.LiveSessionCallbacks
 import com.kmp.talktome.domain.model.PartialTranscript
 import com.kmp.talktome.domain.model.SessionAnalysis
-import com.kmp.talktome.domain.model.SessionConfig
+import com.kmp.talktome.domain.live.SessionConfig
 import com.kmp.talktome.domain.model.SessionStatus
 import com.kmp.talktome.domain.model.TranscriptMessage
 import com.kmp.talktome.domain.model.TranscriptRole

@@ -17,3 +17,22 @@ data class Session @OptIn(ExperimentalTime::class) constructor(
     val audioStoragePath: String? = null,
     val userId: String = ""
 )
+
+@Serializable
+data class TranscriptMessage @OptIn(ExperimentalTime::class) constructor(
+    val role: TranscriptRole,
+    val text: String,
+    val timestamp: Long = Clock.System.now().toEpochMilliseconds()
+)
+
+enum class TranscriptRole {
+    USER, MODEL;
+
+    companion object {
+        fun fromString(value: String?): TranscriptRole? {
+            return entries.find {
+                it.name.equals(value, ignoreCase = true)
+            }
+        }
+    }
+}

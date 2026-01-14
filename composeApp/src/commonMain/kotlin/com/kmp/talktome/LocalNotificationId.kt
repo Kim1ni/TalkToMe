@@ -17,7 +17,7 @@ class LocalNotificationId(
     }
 
     override fun equals(other: Any?): Boolean {
-        other as? LocalNotificationId ?: return false
+        if (other !is LocalNotificationId) return false
         return toString() == other.toString()
     }
 

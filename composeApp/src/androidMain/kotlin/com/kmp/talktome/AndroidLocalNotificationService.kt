@@ -155,7 +155,7 @@ class AndroidLocalNotificationService(
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSmallIcon(android.R.drawable.ic_popup_reminder)
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()

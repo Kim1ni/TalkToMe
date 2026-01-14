@@ -1,7 +1,7 @@
 package com.kmp.talktome.ui.screens.session_details
 
 import com.kmp.talktome.domain.model.Session
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.ui.screens.session_details.models.PlaybackMode
 
 data class SessionDetailsState(

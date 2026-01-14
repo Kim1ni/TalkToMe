@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.ui.screens.session_details.composables.AudioPlayerBar
 import com.kmp.talktome.ui.screens.session_details.composables.FocusAreasCard
 import com.kmp.talktome.ui.screens.session_details.composables.PlaybackSettingsPopover
@@ -212,7 +212,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.ui.screens.session_details.composables.AudioPlayerBar
 import com.kmp.talktome.ui.screens.session_details.composables.FocusAreasCard
 import com.kmp.talktome.ui.screens.session_details.composables.PlaybackSettingsPopover

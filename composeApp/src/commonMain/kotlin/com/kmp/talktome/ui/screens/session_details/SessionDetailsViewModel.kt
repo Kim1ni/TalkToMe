@@ -6,7 +6,7 @@ import com.kmp.talktome.domain.live.AudioPlayer
 import com.kmp.talktome.domain.live.TextToSpeechEngine
 import com.kmp.talktome.domain.model.Session
 import com.kmp.talktome.domain.model.TranscriptRole
-import com.kmp.talktome.domain.model.TtsVoice
+import com.kmp.talktome.domain.live.TtsVoice
 import com.kmp.talktome.domain.repository.SessionRepository
 import com.kmp.talktome.domain.util.onError
 import com.kmp.talktome.domain.util.onSuccess

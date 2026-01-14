@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.kmp.talktome.domain.model.ChartDataPoint
+import com.kmp.talktome.ui.screens.home.models.ChartDataPoint
 import com.kmp.talktome.domain.util.toFormattedDate
 import com.patrykandpatrick.vico.multiplatform.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.multiplatform.cartesian.axis.HorizontalAxis

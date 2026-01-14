@@ -1,8 +1,8 @@
 package com.kmp.talktome.ui.screens.home
 
-import com.kmp.talktome.domain.model.ChartDataPoint
+import com.kmp.talktome.ui.screens.home.models.ChartDataPoint
 import com.kmp.talktome.domain.model.CustomPersona
-import com.kmp.talktome.domain.model.MoodInsight
+import com.kmp.talktome.ui.screens.home.models.MoodInsight
 import com.kmp.talktome.domain.model.Session
 import com.kmp.talktome.domain.model.TodoItem
 

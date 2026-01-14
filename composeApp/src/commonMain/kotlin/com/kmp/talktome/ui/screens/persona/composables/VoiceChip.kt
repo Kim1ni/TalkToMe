@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.kmp.talktome.domain.model.AIVoice
+import com.kmp.talktome.domain.live.AIVoice
 
 
 @Composable

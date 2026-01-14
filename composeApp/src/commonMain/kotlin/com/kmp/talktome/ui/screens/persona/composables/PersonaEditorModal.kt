@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kmp.talktome.domain.model.AIVoice
+import com.kmp.talktome.domain.live.AIVoice
 import com.kmp.talktome.domain.model.CustomPersona
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

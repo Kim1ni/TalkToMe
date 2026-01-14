@@ -12,6 +12,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.kmp.talktome.domain.model.Theme
 import com.kmp.talktome.domain.model.UserPreferences
@@ -31,7 +32,7 @@ import talktome.composeapp.generated.resources.profile_notifications
 fun SettingsSection(
     preferences: UserPreferences?,
     onNotificationToggle: () -> Unit,
-    onThemeToggle: () -> Unit
+    onThemeClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -69,24 +70,29 @@ fun SettingsSection(
                 showDivider = true
             )
 
-            // Theme Toggle
+            // Theme Selector
             SettingItem(
-                painter = if (preferences?.theme == Theme.DARK)
-                    painterResource(Res.drawable.icon_dark_mode) else painterResource(Res.drawable.icon_light_mode),
+                painter = when (preferences?.theme) {
+                    Theme.DARK -> painterResource(Res.drawable.icon_dark_mode)
+                    Theme.LIGHT -> painterResource(Res.drawable.icon_light_mode)
+                    else -> painterResource(Res.drawable.icon_light_mode) // Add a system icon if you have one
+                },
                 iconColor = MaterialTheme.colorScheme.tertiary,
                 iconBackground = MaterialTheme.colorScheme.tertiaryContainer,
                 title = stringResource(Res.string.profile_appearance),
-                subtitle = if (preferences?.theme == Theme.DARK)
-                    stringResource(Res.string.profile_dark_mode)
-                else
-                    stringResource(Res.string.profile_light_mode),
-                onClick = onThemeToggle,
+                subtitle = when (preferences?.theme) {
+                    Theme.DARK -> "Dark Mode"
+                    Theme.LIGHT -> "Light Mode"
+                    Theme.SYSTEM -> "Follow System"
+                    null -> "System Default"
+                },
+                onClick = onThemeClick,
                 trailing = {
                     Icon(
                         painter = painterResource(Res.drawable.icon_arrowback),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.outlineVariant,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp).graphicsLayer(rotationZ = 180f)
                     )
                 }
             )
