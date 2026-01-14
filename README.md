@@ -59,17 +59,17 @@ You are now ready to [follow the run application guide for either Android or iOS
 2. **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)**  
    Declarative UI framework for building beautiful, native UIs across platforms.
 
-3. **[Google Gemini 2.0](https://deepmind.google/technologies/gemini/)**  
-   Advanced multimodal AI for real-time audio interactions and intelligent session analysis.
+3. **[Firebase AI Logic](https://firebase.google.com/docs/ai-logic)**  
+   Advanced multimodal AI for real-time audio interactions(Firebase AI Logic - Platform specific) and intelligent session analysis via [Gemini SDK for KMP](https://github.com/PatilShreyas/generative-ai-kmp/tree/main).
 
 4. **[Firebase(Gitlive library)](https://github.com/GitLiveApp/firebase-kotlin-sdk)**  
-   Backend infrastructure for authentication, cloud storage, and real-time database.
+   Backend infrastructure for authentication, cloud storage, and firestore database.
 
 5. **[Koin](https://insert-koin.io/docs/reference/koin-mp/kmp/)**  
    Lightweight dependency injection framework for clean architecture.
 
 6. **[Ktor](https://ktor.io/)**  
-   Asynchronous HTTP client for API communications.
+   Asynchronous HTTP client for API communications and Coil dependent image loading.
 
 7. **[Coil](https://coil-kt.github.io/coil/)**  
    Image loading library optimized for Compose and Kotlin Multiplatform.
@@ -172,12 +172,24 @@ You are now ready to [follow the run application guide for either Android or iOS
 ├── iosApp/                        # iOS native entry point
 │   └── iosApp/
 │       ├── GoogleService-Info.plist  # Firebase config (iOS)
+│       ├── iosGeminiLiveHandler  # Swift firebase AI logic bridge
 │       └── iosApp.swift
 ├── gradle/
 │   └── libs.versions.toml         # Dependency versions
 ├── local.properties               # Local config (git-ignored)
 └── build.gradle.kts
 ```
+
+# ⚠️ Current Status & Known Issues
+
+This project is a work-in-progress demonstration of KMP and Gemini Live capabilities. Please be aware of the following:
+
+- **Gemini Live Stability**: Real-time audio interactions may occasionally experience latency, cut-offs, or unexpected turn-taking behavior as the Gemini Live API is still in public preview.
+- **Permission Handling**: While core microphone permissions are implemented, the UX for "Permanently Denied" states and seamless transitions to system settings is currently under refinement.
+- **Notifications**: The notification system is partially implemented. Background reminders and deep-linking from notifications are still being optimized for both Android and iOS.
+- **Resource Cleanup**: Ensuring hardware (mic/speaker) is 100% released in all edge cases (like abrupt app closure) is an ongoing area of focus.
+
+---
 
 # Roadmap
 
