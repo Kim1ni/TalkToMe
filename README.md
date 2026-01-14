@@ -10,7 +10,9 @@ Mental health support shouldn't feel clinical or transactional. **TalkToMe** is 
 # Demo
 
 <div align="center">
-  <video src="https://github.com/Kim1ni/TalkToMe/blob/master/assets/TalkToMe_demo.mp4" controls title="Video Title" width="100%"></video>
+  <video src="https://github.com/user-attachments/assets/b94779d3-0131-48a6-b819-d388046d2f7c
+" width="100%" controls>
+</video>
 </div>
 
 # How to run the project
